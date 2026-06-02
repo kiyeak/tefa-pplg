@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('nama_peralatan');
             $table->string('kategori');
             $table->integer('jumlah_stok')->default(0);
-            $table->enum('kondisi', ['baik', 'rusak', 'perbaikan'])->default('baik');
             $table->string('foto')->nullable();
             $table->timestamps();
         });

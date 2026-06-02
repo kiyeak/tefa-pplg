@@ -12,7 +12,6 @@ class PeralatanController extends Controller
     {
         $search = $request->input('search');
         $kategori = $request->input('kategori');
-        $kondisi = $request->input('kondisi');
 
         $query = Peralatan::query();
 
@@ -24,21 +23,16 @@ class PeralatanController extends Controller
             $query->where('kategori', $kategori);
         }
 
-        if (!empty($kondisi)) {
-            $query->where('kondisi', $kondisi);
-        }
-
         $peralatans = $query->latest()->paginate(10);
 
         $peralatans->appends([
             'search' => $search,
             'kategori' => $kategori,
-            'kondisi' => $kondisi
         ]);
 
         $kategoriList = Peralatan::select('kategori')->distinct()->pluck('kategori');
         
-        return view('peralatan.index', compact('peralatans', 'search', 'kategori', 'kondisi', 'kategoriList'));
+        return view('peralatan.index', compact('peralatans', 'search', 'kategori', 'kategoriList'));
     }
 
     public function create()
@@ -58,7 +52,6 @@ class PeralatanController extends Controller
             'nama_peralatan' => 'required|string|max:255',
             'kategori' => 'required|string|max:100',
             'jumlah_stok' => 'required|integer|min:0',
-            'kondisi' => 'required|in:baik,rusak,perbaikan',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -94,7 +87,6 @@ class PeralatanController extends Controller
             'nama_peralatan' => 'required|string|max:255',
             'kategori' => 'required|string|max:100',
             'jumlah_stok' => 'required|integer|min:0',
-            'kondisi' => 'required|in:baik,rusak,perbaikan',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 

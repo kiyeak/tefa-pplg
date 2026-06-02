@@ -10,7 +10,7 @@ class Peralatan extends Model
     use HasFactory;
 
     protected $table = 'peralatans';
-    protected $fillable = ['nama_peralatan', 'kategori', 'jumlah_stok', 'kondisi', 'foto'];
+    protected $fillable = ['nama_peralatan', 'kategori', 'jumlah_stok', 'foto'];
 
     public function peminjamans()
     {
