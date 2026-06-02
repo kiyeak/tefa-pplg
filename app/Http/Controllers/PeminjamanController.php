@@ -160,21 +160,24 @@ class PeminjamanController extends Controller
         }
     }
 
-    public function destroy(Peminjaman $peminjaman)
-    {
-        DB::beginTransaction();
-        try {
-            if (is_null($peminjaman->tanggal_kembali)) {
-                $peminjaman->peralatan->tambahStok($peminjaman->jumlah_pinjam);
-            }
-            $peminjaman->delete();
-            DB::commit();
-            return redirect()->route('peminjaman.index')->with('success', 'Peminjaman berhasil dihapus');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Terjadi kesalahan']);
+public function destroy(Peminjaman $peminjaman)
+{
+    DB::beginTransaction();
+    try {
+        // ✅ Cek: jika belum dikembalikan, jangan hapus!
+        if (is_null($peminjaman->tanggal_kembali)) {
+            return back()->with('error', 'Tidak dapat menghapus peminjaman yang masih aktif! Kembalikan barang terlebih dahulu.');
         }
+        
+        // Hanya peminjaman yang sudah dikembalikan yang boleh dihapus
+        $peminjaman->delete();
+        DB::commit();
+        return redirect()->route('peminjaman.index')->with('success', 'Peminjaman berhasil dihapus');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->withErrors(['error' => 'Terjadi kesalahan']);
     }
+}
 
     public function kembalikan($id)
     {

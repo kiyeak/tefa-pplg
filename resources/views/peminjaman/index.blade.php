@@ -80,29 +80,36 @@
                     <form action="{{ route('peminjaman.kembali', $item->id) }}" method="POST" class="inline">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="text-darkGray hover:text-mediumGray" onclick="return confirm('Kembalikan barang?')">
+                        <button type="submit" class="text-darkGray hover:text-mediumGray" onclick="return confirm('Kembalikan barang? Stok akan bertambah.')">
                             <i class="fas fa-undo"></i>
                         </button>
                     </form>
                     @endif
                     
-                    <!-- Tombol Edit & Hapus (hanya untuk ADMIN dan status Dipinjam) -->
-                    @if(auth()->user()->isAdmin() && $item->status == 'Dipinjam')
-                    <a href="{{ route('peminjaman.edit', $item->id) }}" class="text-darkGray hover:text-mediumGray">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <form action="{{ route('peminjaman.destroy', $item->id) }}" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-primary hover:text-primaryLight" onclick="return confirm('Yakin hapus?')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
+                    <!-- Aksi untuk ADMIN -->
+                    @if(auth()->user()->isAdmin())
+                        @if($item->status == 'Dipinjam')
+                            <!-- Status DIPINJAM → hanya EDIT, TIDAK BOLEH HAPUS -->
+                            <a href="{{ route('peminjaman.edit', $item->id) }}" class="text-darkGray hover:text-mediumGray">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <!-- HAPUS tidak muncul untuk status Dipinjam -->
+                        @else
+                            <!-- Status DIKEMBALIKAN → hanya HAPUS, TIDAK BOLEH EDIT -->
+                            <form action="{{ route('peminjaman.destroy', $item->id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-primary hover:text-primaryLight" onclick="return confirm('Yakin hapus data peminjaman ini? Data akan hilang permanen.')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                            <!-- EDIT tidak muncul untuk status Dikembalikan -->
+                        @endif
                     @endif
                     
-                    <!-- Jika sudah dikembalikan, tampilkan pesan -->
-                    @if($item->status == 'Dikembalikan')
-                        <span class="text-xs text-mediumGray italic">Tidak ada aksi</span>
+                    <!-- Pesan untuk user biasa (bukan admin) -->
+                    @if(!auth()->user()->isAdmin() && $item->status == 'Dikembalikan')
+                        <span class="text-xs text-mediumGray italic">(riwayat)</span>
                     @endif
                 </td>
             </tr>
@@ -129,7 +136,7 @@
             $('#filter-form').submit();
         });
         
-        // Search dengan debounce
+        // Search dengan debounce 500ms
         let timer;
         $('#search-input').on('keyup', function() {
             clearTimeout(timer);
