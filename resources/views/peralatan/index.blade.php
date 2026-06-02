@@ -22,13 +22,6 @@
             @endforeach
         </select>
         
-        <select name="kondisi" class="px-3 py-2 border rounded-lg focus:outline-none focus:border-primary" id="kondisi-select">
-            <option value="">Semua Kondisi</option>
-            <option value="baik" {{ request()->get('kondisi') == 'baik' ? 'selected' : '' }}>Baik</option>
-            <option value="rusak" {{ request()->get('kondisi') == 'rusak' ? 'selected' : '' }}>Rusak</option>
-            <option value="perbaikan" {{ request()->get('kondisi') == 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
-        </select>
-        
         <!-- Tombol reset saja yang manual -->
         <a href="{{ route('peralatan.index') }}" class="bg-darkGray text-white px-4 py-2 rounded-lg hover:bg-mediumGray transition">
             <i class="fas fa-undo"></i> Reset
@@ -49,15 +42,6 @@
         <div class="p-4">
             <h3 class="font-bold text-lg text-primary">{{ $item->nama_peralatan }}</h3>
             <p class="text-darkGray text-sm">Kategori: {{ $item->kategori }}</p>
-            <p class="text-darkGray text-sm">Kondisi: 
-                @if($item->kondisi == 'baik')
-                    <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs">Baik</span>
-                @elseif($item->kondisi == 'rusak')
-                    <span class="bg-red-100 text-red-800 px-2 py-0.5 rounded text-xs">Rusak</span>
-                @else
-                    <span class="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-xs">Perbaikan</span>
-                @endif
-            </p>
             <div class="mt-3 flex justify-between items-center">
                 <span class="text-primary font-bold">Stok: {{ $item->jumlah_stok }}</span>
                 <div class="space-x-2">

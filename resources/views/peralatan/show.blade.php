@@ -51,18 +51,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="py-2 text-darkGray">Kondisi</td>
-                    <td class="py-2">: 
-                        @if($peralatan->kondisi == 'baik')
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Baik</span>
-                        @elseif($peralatan->kondisi == 'rusak')
-                            <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">Rusak</span>
-                        @else
-                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">Perbaikan</span>
-                        @endif
-                    </td>
-                </tr>
-                <tr>
                     <td class="py-2 text-darkGray">Dibuat pada</td>
                     <td class="py-2">: {{ $peralatan->created_at->format('d/m/Y H:i:s') }}</td>
                 </tr>

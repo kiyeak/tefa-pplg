@@ -28,15 +28,6 @@
                 <input type="number" name="jumlah_stok" min="0" value="{{ old('jumlah_stok', $peralatan->jumlah_stok) }}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-primary" required>
             </div>
             
-            <div>
-                <label class="block text-darkGray mb-2">Kondisi <span class="text-primary">*</span></label>
-                <select name="kondisi" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-primary" required>
-                    <option value="baik" {{ $peralatan->kondisi == 'baik' ? 'selected' : '' }}>Baik</option>
-                    <option value="rusak" {{ $peralatan->kondisi == 'rusak' ? 'selected' : '' }}>Rusak</option>
-                    <option value="perbaikan" {{ $peralatan->kondisi == 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
-                </select>
-            </div>
-            
             <div class="md:col-span-2">
                 @if($peralatan->foto)
                     <div class="mb-3">
