@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<!-- Search & Filter -->
+<!-- Search & Filter - Tanpa Tombol Submit -->
 <div class="bg-white rounded-lg shadow p-4 mb-6">
     <form method="GET" action="{{ route('peminjaman.index') }}" class="flex flex-wrap gap-4" id="filter-form">
         <input type="text" name="search" placeholder="Cari pengguna atau peralatan..." value="{{ request('search') }}" 
@@ -29,17 +29,14 @@
             <option value="Dikembalikan" {{ request('status') == 'Dikembalikan' ? 'selected' : '' }}>Dikembalikan</option>
         </select>
         
-        <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primaryLight transition">
-            <i class="fas fa-search"></i> Filter
-        </button>
-        
+        <!-- Tombol Reset saja (karena submit otomatis) -->
         <a href="{{ route('peminjaman.index') }}" class="bg-darkGray text-white px-4 py-2 rounded-lg hover:bg-mediumGray transition">
             <i class="fas fa-undo"></i> Reset
         </a>
     </form>
 </div>
 
-<div class="bg-white rounded-lg shadow overflow-hidden">
+<div class="bg-white rounded-lg shadow overflow-x-auto">
     <table class="w-full">
         <thead class="bg-primary text-white">
             <tr class="text-left">
@@ -57,7 +54,10 @@
             @forelse($peminjamans as $item)
             <tr>
                 <td class="px-6 py-4">{{ $loop->iteration }}</td>
-                <td class="px-6 py-4">{{ $item->pengguna->nama }}<br><small class="text-mediumGray">{{ $item->pengguna->kelas }}</small></td>
+                <td class="px-6 py-4">
+                    {{ $item->pengguna->nama }}
+                    <br><small class="text-mediumGray">{{ $item->pengguna->kelas }}</small>
+                </td>
                 <td class="px-6 py-4">{{ $item->peralatan->nama_peralatan }}</td>
                 <td class="px-6 py-4">{{ $item->jumlah_pinjam }}</td>
                 <td class="px-6 py-4">{{ \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d/m/Y') }}</td>
@@ -69,8 +69,8 @@
                         <span class="bg-mediumGray text-white px-2 py-1 rounded text-sm">Dikembalikan</span>
                     @endif
                 </td>
-                <td class="px-6 py-4 space-x-2">
-                    <!-- Tombol Lihat (selalu ada) -->
+                <td class="px-6 py-4 space-x-2 whitespace-nowrap">
+                    <!-- Tombol Lihat -->
                     <a href="{{ route('peminjaman.show', $item->id) }}" class="text-primary hover:text-primaryLight">
                         <i class="fas fa-eye"></i>
                     </a>
@@ -89,13 +89,12 @@
                     <!-- Aksi untuk ADMIN -->
                     @if(auth()->user()->isAdmin())
                         @if($item->status == 'Dipinjam')
-                            <!-- Status DIPINJAM → hanya EDIT, TIDAK BOLEH HAPUS -->
+                            <!-- Status DIPINJAM → hanya EDIT -->
                             <a href="{{ route('peminjaman.edit', $item->id) }}" class="text-darkGray hover:text-mediumGray">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <!-- HAPUS tidak muncul untuk status Dipinjam -->
                         @else
-                            <!-- Status DIKEMBALIKAN → hanya HAPUS, TIDAK BOLEH EDIT -->
+                            <!-- Status DIKEMBALIKAN → hanya HAPUS -->
                             <form action="{{ route('peminjaman.destroy', $item->id) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
@@ -103,11 +102,10 @@
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
-                            <!-- EDIT tidak muncul untuk status Dikembalikan -->
                         @endif
                     @endif
                     
-                    <!-- Pesan untuk user biasa (bukan admin) -->
+                    <!-- Pesan untuk user biasa -->
                     @if(!auth()->user()->isAdmin() && $item->status == 'Dikembalikan')
                         <span class="text-xs text-mediumGray italic">(riwayat)</span>
                     @endif
@@ -131,12 +129,12 @@
 
 <script>
     $(document).ready(function() {
-        // Auto submit saat select status berubah
+        // 1. Status select → otomatis submit saat berubah
         $('#status-select').on('change', function() {
             $('#filter-form').submit();
         });
         
-        // Search dengan debounce 500ms
+        // 2. Search input → submit dengan debounce (tanpa tombol)
         let timer;
         $('#search-input').on('keyup', function() {
             clearTimeout(timer);
